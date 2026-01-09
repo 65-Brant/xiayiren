@@ -1,0 +1,405 @@
+好的，这个名字非常直白且具有高吸引力，直接击中了用户“想看结果”的心理。
+
+我已经基于 **v4.0（截图社交版）** 的代码进行了修改：
+
+1. **首页大标题**：更新为 **《你的下一任恋人画像》**。
+2. **副标题**：醒目标注 **“包含职业 · 性格 · 避坑指南”**，强化价值感知。
+3. **结果页卡片**：微调了布局，让“职业”和“避坑”这两个用户最关心的点更加突出。
+
+请直接复制以下完整代码覆盖原有文件：
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>你的下一任恋人画像 | 深度侧写</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* 隐藏滚动条 */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        /* 动画定义 */
+        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        .fade-out { animation: fadeOut 0.4s ease-out forwards; }
+        .slide-up { animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 结果卡片样式 */
+        .result-card-frame {
+            background: linear-gradient(145deg, #1e1b4b 0%, #0f172a 100%);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            box-shadow: 0 20px 50px -12px rgba(88, 28, 135, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 选项按钮 */
+        .option-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .option-btn:active {
+            background: rgba(167, 139, 250, 0.15);
+            transform: scale(0.97);
+            border-color: rgba(167, 139, 250, 0.4);
+        }
+
+        /* 装饰纹理 */
+        .noise-bg {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            opacity: 0.4;
+            mix-blend-mode: overlay;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex justify-center bg-[#0f172a]">
+
+    <div id="app" class="w-full max-w-md h-full min-h-screen relative overflow-hidden flex flex-col">
+        
+        <div class="fixed inset-0 z-0 pointer-events-none">
+            <div class="absolute top-[-20%] left-[-20%] w-[500px] h-[500px] bg-purple-900/30 rounded-full blur-[120px]"></div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-[400px] h-[400px] bg-indigo-900/20 rounded-full blur-[100px]"></div>
+        </div>
+
+        <section id="landing-page" class="relative z-10 h-screen flex flex-col justify-center items-center p-8 fade-in">
+            <div class="absolute top-0 left-0 w-full h-full noise-bg pointer-events-none"></div>
+            
+            <div class="text-center space-y-2 mb-10">
+                <div class="w-px h-10 bg-gradient-to-b from-transparent to-purple-400 mx-auto mb-6 opacity-50"></div>
+                
+                <h1 class="text-3xl font-bold text-white drop-shadow-[0_0_15px_rgba(168,85,247,0.5)] mb-2">
+                    你的下一任<br><span class="text-4xl text-purple-200">恋人画像</span>
+                </h1>
+                
+                <div class="flex items-center justify-center space-x-2 text-[10px] text-purple-300 uppercase tracking-widest border border-purple-500/30 rounded-full px-3 py-1 bg-purple-900/20 mt-4">
+                    <span>职业预测</span>
+                    <span class="text-purple-600">•</span>
+                    <span>性格侧写</span>
+                    <span class="text-purple-600">•</span>
+                    <span>避坑指南</span>
+                </div>
+            </div>
+
+            <div class="w-full max-w-xs space-y-6 z-20">
+                <div class="flex items-center justify-center space-x-2 text-xs text-slate-500 mb-6">
+                    <input type="checkbox" id="agreement" class="w-3 h-3 rounded border-slate-700 bg-transparent text-purple-600 focus:ring-0 cursor-pointer">
+                    <label for="agreement" class="cursor-pointer">允许读取潜意识数据</label>
+                </div>
+                
+                <button onclick="startQuiz()" class="w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded text-white text-sm tracking-widest transition-all duration-300 active:scale-95 group relative overflow-hidden shadow-[0_0_20px_rgba(139,92,246,0.2)]">
+                    <span class="relative z-10 font-bold">开始生成画像</span>
+                    <div class="absolute inset-0 bg-purple-600/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                </button>
+                
+                <p class="text-[10px] text-center text-slate-600 opacity-60">
+                    基于 Project Fate 心理原型数据库
+                </p>
+            </div>
+        </section>
+
+        <section id="quiz-page" class="hidden relative z-10 min-h-screen flex-col p-6 pt-12">
+            <div class="flex justify-between items-end mb-8 border-b border-white/5 pb-2">
+                <span class="text-purple-400 text-[10px] font-bold tracking-widest uppercase" id="phase-label">Phase 1</span>
+                <span class="text-slate-600 text-[10px] font-mono" id="question-count">01 / 18</span>
+            </div>
+
+            <div class="mb-10 fade-in min-h-[100px] flex items-center" id="question-container">
+                <h2 id="question-text" class="text-xl font-medium leading-relaxed text-slate-100">...</h2>
+            </div>
+
+            <div class="flex flex-col space-y-3 flex-1" id="options-container"></div>
+        </section>
+
+        <section id="loading-page" class="hidden relative z-10 h-screen flex-col items-center justify-center bg-black/60 backdrop-blur-md">
+            <div class="w-16 h-16 border-l-2 border-t-2 border-purple-500 rounded-full animate-spin mb-6"></div>
+            <p id="loading-text" class="text-xs text-purple-300 tracking-widest blink">正在连接潜意识...</p>
+        </section>
+
+        <section id="result-page" class="hidden relative z-10 min-h-screen flex flex-col items-center justify-center p-6 py-10">
+            
+            <div id="share-card" class="result-card-frame w-full max-w-sm rounded-xl p-8 text-center slide-up mb-6 border-t-4 border-t-purple-500">
+                <div class="absolute top-0 left-0 w-full h-full noise-bg"></div>
+                <div class="absolute top-[-50px] left-1/2 -translate-x-1/2 w-[200px] h-[200px] bg-purple-500/10 rounded-full blur-[60px]"></div>
+
+                <div class="relative z-10 mb-6">
+                    <p class="text-[10px] text-slate-400 tracking-[0.3em] uppercase mb-2">LOVER PROFILE</p>
+                    <div class="inline-block px-3 py-1 border border-purple-500/30 rounded-full bg-purple-900/20">
+                        <p id="result-tag" class="text-xs text-purple-300 font-bold"># 标签加载中</p>
+                    </div>
+                </div>
+
+                <h2 id="result-title" class="relative z-10 text-4xl font-black text-white mb-6 drop-shadow-md font-serif">...</h2>
+
+                <div class="relative z-10 mb-8 px-2">
+                    <i class="fa-solid fa-quote-left text-purple-700/30 text-2xl absolute top-[-10px] left-[-10px]"></i>
+                    <p id="result-quote" class="text-sm text-slate-300 leading-7 italic font-light">...</p>
+                </div>
+
+                <div class="w-full h-px bg-gradient-to-r from-transparent via-purple-500/30 to-transparent mb-6"></div>
+
+                <div class="relative z-10 text-left space-y-5 mb-8">
+                    <div class="bg-white/5 p-3 rounded border border-white/5">
+                        <p class="text-[10px] text-purple-400 font-bold uppercase mb-1 flex items-center">
+                            <i class="fa-solid fa-briefcase mr-2"></i> 职业与外貌特征
+                        </p>
+                        <p id="result-desc" class="text-xs text-slate-300 leading-5">...</p>
+                    </div>
+                    <div class="bg-red-900/10 p-3 rounded border border-red-500/10">
+                        <p class="text-[10px] text-red-400 font-bold uppercase mb-1 flex items-center">
+                            <i class="fa-solid fa-triangle-exclamation mr-2"></i> 情感避坑指南
+                        </p>
+                        <p id="result-warn" class="text-xs text-slate-400 leading-5">...</p>
+                    </div>
+                </div>
+
+                <div class="relative z-10 bg-black/20 rounded-lg p-2 border border-white/5">
+                    <p class="text-[10px] text-slate-500 mb-1">评论区寻找你的互补型 👇</p>
+                    <p id="result-code" class="text-sm font-mono text-purple-300 font-bold tracking-widest">CODE: ...</p>
+                </div>
+                
+                <div class="mt-6 opacity-30">
+                     <i class="fa-solid fa-fingerprint text-2xl text-white"></i>
+                </div>
+            </div>
+
+            <div class="text-center space-y-2 opacity-0 animate-[fadeIn_1s_ease-out_1s_forwards]">
+                <p class="text-xs text-slate-400"><i class="fa-solid fa-camera mr-1"></i> 长按截图保存画像</p>
+                <button onclick="location.reload()" class="text-[10px] text-purple-500 underline mt-4">重测一次</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // --- 核心数据 ---
+        const questions = [
+            // Phase 1
+            { q: "迷雾中的四扇门，哪一扇后站着那个“等你的人”？", phase: "PHASE 1", options: [
+                { text: "A. 缠绕藤蔓的白木门", type: "A" }, { text: "B. 金色徽章的黑铁门", type: "B" },
+                { text: "C. 半开的神秘玻璃门", type: "C" }, { text: "D. 极简的灰色水泥门", type: "D" }
+            ]},
+            { q: "极度疲惫时，哪种方式能让你瞬间回血？", phase: "PHASE 1", options: [
+                { text: "A. 烛光与轻音乐的私密聚会", type: "A" }, { text: "B. 站在高处俯瞰城市夜景", type: "B" },
+                { text: "C. 去从未去过的森林徒步", type: "C" }, { text: "D. 关上门，独自在房间发呆", type: "D" }
+            ]},
+            { q: "如果可以拥有世上任意一间房，你选？", phase: "PHASE 1", options: [
+                { text: "A. 开满花的法式田园小屋", type: "A" }, { text: "B. 市中心顶层奢华大平层", type: "B" },
+                { text: "C. 随处停靠的豪华房车", type: "C" }, { text: "D. 悬崖边与世隔绝的玻璃屋", type: "D" }
+            ]},
+            { q: "在全是陌生人的晚宴上，你的位置？", phase: "PHASE 1", options: [
+                { text: "A. 人群中心，微笑着倾听", type: "A" }, { text: "B. 二楼露台，观察全场", type: "B" },
+                { text: "C. 穿梭各处寻找有趣的人", type: "C" }, { text: "D. 靠近出口的角落", type: "D" }
+            ]},
+            { q: "直觉选一个代表你灵魂的颜色？", phase: "PHASE 1", options: [
+                { text: "A. 藕粉色 (温柔)", type: "A" }, { text: "B. 墨金色 (权力)", type: "B" },
+                { text: "C. 孔雀绿 (神秘)", type: "C" }, { text: "D. 雾霾蓝 (理智)", type: "D" }
+            ]},
+            { q: "出门必须带的一样“无用”之物？", phase: "PHASE 1", options: [
+                { text: "A. 一张旧照片", type: "A" }, { text: "B. 名牌钢笔或手表", type: "B" },
+                { text: "C. 旧指南针", type: "C" }, { text: "D. 降噪耳机", type: "D" }
+            ]},
+            // Phase 2
+            { q: "传说这枚戒指能实现愿望，它能？", phase: "PHASE 2", options: [
+                { text: "A. 让特定的人永远只爱你", type: "A" }, { text: "B. 给你至高无上的地位", type: "B" },
+                { text: "C. 让你隐身去任何地方", type: "C" }, { text: "D. 创造绝对安全的结界", type: "D" }
+            ]},
+            { q: "梦中被某种生物追逐，它是？", phase: "PHASE 2", options: [
+                { text: "A. 密密麻麻的飞蛾", type: "A" }, { text: "B. 巨大的狮子", type: "B" },
+                { text: "C. 看不见的毒蛇", type: "C" }, { text: "D. 无脸的人形生物", type: "D" }
+            ]},
+            { q: "桌上四杯水，哪一杯可能有“毒”？", phase: "PHASE 2", options: [
+                { text: "A. 沸腾的红水", type: "A" }, { text: "B. 金杯里的酒", type: "B" },
+                { text: "C. 杯底有异物的清水", type: "C" }, { text: "D. 冒冷气的蓝水", type: "D" }
+            ]},
+            { q: "暴风雨来袭，你下意识躲进哪里？", phase: "PHASE 2", options: [
+                { text: "A. 温暖狭小的洞穴", type: "A" }, { text: "B. 坚固的高塔", type: "B" },
+                { text: "C. 冲进雨里找新路", type: "C" }, { text: "D. 废墟断墙后", type: "D" }
+            ]},
+            { q: "破碎的镜子里，你看到了一张什么脸？", phase: "PHASE 2", options: [
+                { text: "A. 流泪的脸", type: "A" }, { text: "B. 愤怒扭曲的脸", type: "B" },
+                { text: "C. 诡异微笑的脸", type: "C" }, { text: "D. 虚无空白的脸", type: "D" }
+            ]},
+            { q: "哪双眼睛让你感到“战栗”？", phase: "PHASE 2", options: [
+                { text: "A. 湿润哀伤的眼", type: "A" }, { text: "B. 锐利压迫的眼", type: "B" },
+                { text: "C. 迷离诱惑的眼", type: "C" }, { text: "D. 空洞冷漠的眼", type: "D" }
+            ]},
+            // Phase 3
+            { q: "如果只能养一种生物陪伴你？", phase: "PHASE 3", options: [
+                { text: "A. 粘人的小狗", type: "A" }, { text: "B. 高傲的黑豹", type: "B" },
+                { text: "C. 自由的鹦鹉", type: "C" }, { text: "D. 忠诚的机器人", type: "D" }
+            ]},
+            { q: "吵架后，希望对方怎么做？", phase: "PHASE 3", options: [
+                { text: "A. 立刻抱住我，别说话", type: "A" }, { text: "B. 理智分析谁对谁错", type: "B" },
+                { text: "C. 别烦我，各自玩", type: "C" }, { text: "D. 发信息道歉别见面", type: "D" }
+            ]},
+            { q: "最向往的约会场景？", phase: "PHASE 3", options: [
+                { text: "A. 海边看烟花", type: "A" }, { text: "B. 高端酒会", type: "B" },
+                { text: "C. 沙漠看日出", type: "C" }, { text: "D. 在家各玩手机", type: "D" }
+            ]},
+            { q: "真正的爱情本质像？", phase: "PHASE 3", options: [
+                { text: "A. 燃烧的火焰", type: "A" }, { text: "B. 坚固的契约", type: "B" },
+                { text: "C. 自由的风", type: "C" }, { text: "D. 深不见底的湖", type: "D" }
+            ]},
+            { q: "为了真爱，愿意放弃什么？", phase: "PHASE 3", options: [
+                { text: "A. 一点点理智", type: "A" }, { text: "B. 他人的评价", type: "B" },
+                { text: "C. 稳定的生活", type: "C" }, { text: "D. 什么都不愿放弃", type: "D" }
+            ]},
+            { q: "那个向你走来的“宿命恋人”，此刻心情是？", phase: "PHASE 3", options: [
+                { text: "A. 急切寻找你", type: "A" }, { text: "B. 自信等待你", type: "B" },
+                { text: "C. 迷茫迷路中", type: "C" }, { text: "D. 平静慢慢走", type: "D" }
+            ]}
+        ];
+
+        // 结果数据 (针对新标题优化的文案)
+        const results = {
+            "A": {
+                title: "荆棘鸟",
+                tag: "浪漫主义 | 献祭型",
+                quote: "“你总想在爱里当救世主，最后却成了殉道者。”",
+                desc: "【职业预测】艺术创作者、医生、心理咨询师或自由职业。<br>【特征】偏瘦高，眼神忧郁，书卷气，精神世界极度丰富。",
+                warn: "你的圣母心是你最大的软肋。必须警惕那些向你过度卖惨、试图激起你拯救欲的人。",
+                code: "TYPE: A (需互补D型)"
+            },
+            "B": {
+                title: "权杖皇后",
+                tag: "现实主义 | 慕强型",
+                quote: "“你可以不爱我，但你必须臣服于我。”",
+                desc: "【职业预测】金融投行、高管、律师或创业者。<br>【特征】气场强大，衣着考究，世俗成就高，智力对等。",
+                warn: "小心那些把你当战利品展示的自恋狂。你需要的不是追随者，而是势均力敌的对手。",
+                code: "TYPE: B (需互补C型)"
+            },
+            "C": {
+                title: "流浪猫",
+                tag: "享乐主义 | 自由型",
+                quote: "“爱是瞬间的火花，不是永久的枷锁。”",
+                desc: "【职业预测】摄影师、音乐人、极限运动或新媒体。<br>【特征】潮、有个性、痞帅，生活充满变数和激情。",
+                warn: "别试图改变浪子，也别为了安稳找老实人。你需要一个能陪你疯、但比你成熟一点的人。",
+                code: "TYPE: C (需互补B型)"
+            },
+            "D": {
+                title: "孤岛灯塔",
+                tag: "绝对理性 | 回避型",
+                quote: "“你渴望拥抱，却像刺猬一样竖起了刺。”",
+                desc: "【职业预测】公务员、工程师、建筑师或传统实业。<br>【特征】阳光敦实，笑眼，钝感力强，情绪极其稳定。",
+                warn: "远离情绪忽冷忽热的人。你的下一任必须像大地一样稳重，能接住你所有的不安。",
+                code: "TYPE: D (需互补A型)"
+            }
+        };
+
+        // --- 逻辑控制 ---
+        let currentQIndex = 0;
+        let scores = { A: 0, B: 0, C: 0, D: 0 };
+
+        function startQuiz() {
+            if (!document.getElementById('agreement').checked) {
+                document.getElementById('agreement').parentElement.classList.add('animate-bounce');
+                setTimeout(()=>document.getElementById('agreement').parentElement.classList.remove('animate-bounce'), 1000);
+                return;
+            }
+            
+            document.getElementById('landing-page').classList.add('fade-out');
+            setTimeout(() => {
+                document.getElementById('landing-page').style.display = 'none';
+                document.getElementById('quiz-page').style.display = 'flex';
+                document.getElementById('quiz-page').classList.add('fade-in');
+                renderQuestion();
+            }, 400);
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQIndex];
+            document.getElementById('phase-label').innerText = q.phase;
+            document.getElementById('question-count').innerText = `${String(currentQIndex + 1).padStart(2, '0')} / ${questions.length}`;
+            document.getElementById('question-text').innerText = q.q;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('div');
+                btn.className = 'option-btn rounded-lg p-4 cursor-pointer flex items-center shadow-md transform transition-all duration-300 opacity-0 translate-y-2';
+                btn.style.animation = `fadeIn 0.3s ease-out forwards ${index * 0.05}s`;
+                
+                btn.onclick = () => selectOption(opt.type);
+                btn.innerHTML = `
+                    <div class="w-full flex items-center justify-between">
+                        <span class="text-slate-300 text-sm tracking-wide">${opt.text}</span>
+                        <div class="w-4 h-4 rounded-full border border-white/20"></div>
+                    </div>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        function selectOption(type) {
+            const weight = currentQIndex >= 12 ? 2 : 1;
+            scores[type] += weight;
+            currentQIndex++;
+            
+            if (currentQIndex < questions.length) {
+                setTimeout(renderQuestion, 150);
+            } else {
+                showLoading();
+            }
+        }
+
+        function showLoading() {
+            document.getElementById('quiz-page').style.display = 'none';
+            document.getElementById('loading-page').style.display = 'flex';
+            
+            const texts = ["正在连接潜意识...", "分析依恋模式...", "生成职业画像..."];
+            let i = 0;
+            const interval = setInterval(() => {
+                document.getElementById('loading-text').innerText = texts[i];
+                i++;
+                if (i >= texts.length) i = 0;
+            }, 800);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                calculateAndShowResult();
+            }, 2500);
+        }
+
+        function calculateAndShowResult() {
+            let maxScore = -1;
+            let resultType = 'A';
+            for (let type in scores) {
+                if (scores[type] > maxScore) {
+                    maxScore = scores[type];
+                    resultType = type;
+                }
+            }
+            
+            const res = results[resultType];
+            document.getElementById('result-title').innerText = res.title;
+            document.getElementById('result-tag').innerText = res.tag;
+            document.getElementById('result-quote').innerText = res.quote;
+            document.getElementById('result-desc').innerHTML = res.desc; // 使用 innerHTML 渲染换行
+            document.getElementById('result-warn').innerText = res.warn;
+            document.getElementById('result-code').innerText = res.code;
+
+            document.getElementById('loading-page').style.display = 'none';
+            document.getElementById('result-page').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
+
+```
